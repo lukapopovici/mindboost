@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { Container, Typography, Box, Button, Input, Paper } from '@mui/material';
+import { Container, Typography, Box, Button, Input, Paper, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 function App() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -26,29 +27,52 @@ function App() {
         </Typography>
       </header>
       <Container maxWidth="sm">
-        <Paper elevation={3} className="upload-section">
-          <Typography variant="h6" gutterBottom>
-            Upload your study materials
-          </Typography>
-          <Box display="flex" flexDirection="column" alignItems="center">
-            <label htmlFor="file-upload">
-              <Input
-                id="file-upload"
-                type="file"
-                onChange={handleFileChange}
-                style={{ display: 'none' }}
-              />
-              <Button variant="contained" color="primary" component="span">
-                Choose File
-              </Button>
-            </label>
-            {fileName && (
-              <Typography variant="body2" style={{ marginTop: 12, color: '#29335C' }}>
-                Selected: {fileName}
-              </Typography>
-            )}
-          </Box>
-        </Paper>
+        {/* Section 1: Upload Materials */}
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography variant="h6">Upload your study materials</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Paper elevation={3} className="upload-section" style={{ width: '100%' }}>
+              <Box display="flex" flexDirection="column" alignItems="center">
+                <label htmlFor="file-upload">
+                  <Input
+                    id="file-upload"
+                    type="file"
+                    onChange={handleFileChange}
+                    style={{ display: 'none' }}
+                  />
+                  <Button variant="contained" color="primary" component="span">
+                    Choose File
+                  </Button>
+                </label>
+                {fileName && (
+                  <Typography variant="body2" style={{ marginTop: 12, color: '#29335C' }}>
+                    Selected: {fileName}
+                  </Typography>
+                )}
+              </Box>
+            </Paper>
+          </AccordionDetails>
+        </Accordion>
+        {/* Section 2: Concept Graphs */}
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography variant="h6">Concept Graphs</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography variant="body2">(Functionality for concept graphs goes here.)</Typography>
+          </AccordionDetails>
+        </Accordion>
+        {/* Section 3: Burnout Prevention */}
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography variant="h6">Burnout Prevention</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography variant="body2">(Functionality for burnout prevention goes here.)</Typography>
+          </AccordionDetails>
+        </Accordion>
       </Container>
     </div>
   );
