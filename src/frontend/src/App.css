@@ -1,0 +1,82 @@
+
+.App {
+  text-align: center;
+  background: #E8E9EB;
+  min-height: 100vh;
+  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+
+.App-header {
+  background-color: #29335C;
+  min-height: 40vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(18px + 2vmin);
+  color: #F7934C;
+  border-radius: 0 0 100px 100px;
+  box-shadow: 0 4px 24px rgba(41,51,92,0.08);
+  margin-bottom: 32px;
+}
+
+
+.App-link {
+  color: #55828B;
+}
+
+.subtitle {
+  color: #55828B;
+  font-size: 1.5rem;
+  margin-top: 12px;
+  margin-bottom: 24px;
+}
+
+.upload-section {
+  background: #F7934C22;
+  border: 2px dashed #55828B;
+  border-radius: 16px;
+  padding: 32px;
+  margin: 32px auto;
+  max-width: 400px;
+  box-shadow: 0 2px 8px rgba(41,51,92,0.05);
+}
+
+.MuiButton-containedPrimary {
+  background-color: #F7934C !important;
+  color: #29335C !important;
+}
+
+.MuiButton-containedSecondary {
+  background-color: #55828B !important;
+  color: #E8E9EB !important;
+}
+
+.MuiInputBase-root {
+  color: #29335C !important;
+}
+
+.MuiFormLabel-root {
+  color: #96031A !important;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
