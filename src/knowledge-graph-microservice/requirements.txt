@@ -1,0 +1,5 @@
+# Knowledge Graph Microservice requirements
+fastapi
+uvicorn
+PyPDF2
+networkx

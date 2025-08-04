@@ -4,14 +4,17 @@ MindBoost AI: An Intelligent Study Companion
 
 ## Microservices Architecture
 
+
 This project is organized as a set of independent microservices:
 
 - **backend**: API Gateway microservice (routes requests to other services)
 - **pdf-parser-microservice**: Parses PDF files and extracts text
 - **bedrock-client-microservice**: Handles communication with Amazon Bedrock
+- **knowledge-graph-microservice**: Accepts a PDF and returns a knowledge graph (nodes/links) for visualization in the frontend (e.g., with Recharts)
 - **frontend**: React app for the user interface
 
 Each microservice is self-contained and can be run independently. See each service's README for details.
+
 
 ### Running the Microservices
 
@@ -27,7 +30,11 @@ Each microservice is self-contained and can be run independently. See each servi
    - Directory: `src/bedrock-client-microservice`
    - Run: `uvicorn src.main:app --reload`
 
-4. **Frontend**
+4. **Knowledge Graph**
+   - Directory: `src/knowledge-graph-microservice`
+   - Run: `uvicorn src.main:app --reload`
+
+5. **Frontend**
    - Directory: `src/frontend`
    - Run: `npm start`
 
