@@ -1,0 +1,4 @@
+# API Gateway Microservice requirements
+fastapi
+uvicorn
+httpx

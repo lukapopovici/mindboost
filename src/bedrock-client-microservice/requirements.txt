@@ -1,0 +1,4 @@
+# Bedrock Client Microservice requirements
+fastapi
+uvicorn
+boto3

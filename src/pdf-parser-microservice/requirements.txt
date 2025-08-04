@@ -1,0 +1,4 @@
+# PDF Parser Microservice requirements
+fastapi
+uvicorn
+PyPDF2
