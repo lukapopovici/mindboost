@@ -1,10 +1,17 @@
 from flask import Blueprint, request, jsonify
 import requests
+import boto3
+import os
+from botocore.exceptions import BotoCoreError, ClientError
+from dotenv import load_dotenv
+
+load_dotenv()
 
 gateway = Blueprint('gateway', __name__)
 
 PDF_PARSER_URL = 'http://pdf-parser-service/api/parse'
-BEDROCK_API_URL = 'http://bedrock-service/api/ask'
+BEDROCK_REGION = os.environ.get('BEDROCK_REGION', 'us-east-1')
+BEDROCK_MODEL_ID = os.environ.get('BEDROCK_MODEL_ID', 'anthropic.claude-v2')
 
 @gateway.route('/api/parse-pdf', methods=['POST'])
 def parse_pdf():
@@ -26,9 +33,23 @@ def ask_bedrock():
     if not question:
         return jsonify({'error': 'No question provided'}), 400
 
-    response = requests.post(BEDROCK_API_URL, json={'question': question})
-    if response.status_code != 200:
-        return jsonify({'error': 'Failed to get response from Bedrock API'}), response.status_code
-
-    bedrock_response = response.json()
-    return jsonify(bedrock_response)
+    try:
+        bedrock = boto3.client('bedrock-runtime', region_name=BEDROCK_REGION)
+        body = {
+            "prompt": f"Human: {question}\nAssistant:",
+            "max_tokens_to_sample": 256,
+            "temperature": 0.5,
+            "top_k": 250,
+            "top_p": 1,
+            "stop_sequences": ["\nHuman:"]
+        }
+        response = bedrock.invoke_model(
+            modelId=BEDROCK_MODEL_ID,
+            contentType="application/json",
+            accept="application/json",
+            body=str(body).replace("'", '"')
+        )
+        result = response['body'].read().decode('utf-8')
+        return jsonify({"bedrock_response": result})
+    except (BotoCoreError, ClientError) as e:
+        return jsonify({'error': f'Failed to get response from Amazon Bedrock: {str(e)}'}), 500

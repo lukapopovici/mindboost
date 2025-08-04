@@ -19,23 +19,39 @@ api-gateway-microservice
 └── README.md                  # Documentation for the project
 ```
 
+
 ## Setup Instructions
 
-1. Clone the repository:
-   ```
+1. **Clone the repository:**
+   ```sh
    git clone <repository-url>
    cd api-gateway-microservice
    ```
 
-2. Install the required dependencies:
-   ```
+2. **Install dependencies:**
+   ```sh
    pip install -r requirements.txt
    ```
 
-3. Run the API Gateway microservice:
-   ```
+3. **Create a `.env` file:**
+   - Copy the provided `.env.example` or create a new `.env` file in this directory.
+   - Add your Amazon Bedrock API key and any other secrets:
+     ```env
+     AWS_BEARER_TOKEN_BEDROCK=your-bedrock-api-key
+     BEDROCK_REGION=us-east-1
+     BEDROCK_MODEL_ID=anthropic.claude-v2
+     ```
+
+4. **Set up AWS credentials:**
+   - Make sure your AWS credentials (with Bedrock access) are available, e.g. via `~/.aws/credentials`, environment variables, or IAM role.
+
+5. **Run the API Gateway microservice:**
+   ```sh
    python src/main.py
    ```
+
+6. **Test the endpoints:**
+   - Use a tool like Postman or `curl` to POST to `/api/parse-pdf` (with a PDF file) or `/api/ask-bedrock` (with a JSON body containing a `question`).
 
 ## Usage
 
