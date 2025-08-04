@@ -58,6 +58,30 @@ api-gateway-microservice
 - The API Gateway exposes endpoints that can be used to interact with the PDF parsing microservice and the Amazon Bedrock API.
 - Refer to the `src/routes/gateway.py` file for the available routes and their usage.
 
+## Frontend Integration
+
+The frontend React app provides a user interface for interacting with this API Gateway and its connected microservices:
+
+- **PDF Upload:**
+  - The user selects a PDF file in the UI.
+  - The frontend sends the file to the `/api/parse-pdf` endpoint of this gateway.
+  - The gateway forwards the file to the PDF parser microservice, receives the parsed data, and returns it to the frontend.
+
+- **Ask Bedrock:**
+  - The user (expected in future UI) enters a question.
+  - The frontend sends the question as JSON to the `/api/ask-bedrock` endpoint.
+  - The gateway sends the question to Amazon Bedrock, receives the AI-generated answer, and returns it to the frontend.
+
+- **Other Features:**
+  - The UI has placeholders for concept graphs and burnout prevention, which are designed to interact with future backend endpoints.
+
+**How it works together:**
+- The frontend collects user input and displays results.
+- It communicates with the backend via HTTP requests to the API endpoints described above.
+- The backend handles business logic and communication with specialized microservices (PDF parser, Amazon Bedrock).
+
+---
+
 ## Notes
 
 - Ensure that the PDF parsing microservice and the Amazon Bedrock API are accessible from the API Gateway.
