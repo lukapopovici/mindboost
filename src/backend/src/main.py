@@ -2,6 +2,7 @@ from fastapi import FastAPI, UploadFile, File, Request, Depends, HTTPException, 
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 import httpx
+from fastapi.middleware.cors import CORSMiddleware
 
 from . import auth, models, schemas
 from .database import SessionLocal, engine, get_db
@@ -9,6 +10,19 @@ from .database import SessionLocal, engine, get_db
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="MindBoost API Gateway")
+
+origins = [
+    "http://localhost",
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def get_db():
     db = SessionLocal()
