@@ -1,4 +1,9 @@
-# API Gateway Microservice requirements
 fastapi
 uvicorn
+python-jose[cryptography]
+pydantic[email]
 httpx
+sqlalchemy
+python-multipart
+bcrypt==3.2.0
+passlib[bcrypt]==1.7.4

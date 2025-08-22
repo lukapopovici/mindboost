@@ -3,3 +3,4 @@ fastapi
 uvicorn
 PyPDF2
 networkx
+python-multipart
