@@ -38,6 +38,14 @@ Each microservice is self-contained and can be run independently. See each servi
    - Directory: `src/frontend`
    - Run: `npm start`
 
+## Important!
+
+When first setting it up and running the services, before trying to log in run the script in the src/misc folder after installing the dependecies in order to populate the database
+
+```
+pip install -r db_tools/requirements.txt
+
+```
 ---
 
 See each microservice's README for API endpoints and further setup instructions.
