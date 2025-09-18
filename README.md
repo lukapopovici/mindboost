@@ -38,6 +38,29 @@ Each microservice is self-contained and can be run independently. See each servi
    - Directory: `src/frontend`
    - Run: `npm start`
 
+
+---
+
+### Test Users for Development
+
+These users are automatically added to the database for testing and login:
+
+| Email               | Password      |
+|---------------------|--------------|
+| test1@example.com   | password123  |
+| test2@example.com   | letmein456   |
+| test3@example.com   | qwerty789    |
+
+Use these credentials to log in during development and testing.
+
+## Important!
+
+When first setting it up and running the services, before trying to log in run the script in the src/misc folder after installing the dependecies in order to populate the database
+
+```
+pip install -r misc/requirements.txt
+
+```
 ---
 
 See each microservice's README for API endpoints and further setup instructions.
