@@ -27,15 +27,29 @@ def log_bedrock_call(user, request, response, cost):
     }
     save_log(entry)
 
-st.title("Bedrock Call Monitor")
+st.set_page_config(page_title="Bedrock Monitor", layout="wide")
+st.markdown("# 🧠 Bedrock Call Monitor")
 logs = load_logs()
 
-st.write(f"Total calls: {len(logs)}")
-if logs:
-    st.write("## Call Details")
-    for log in logs:
-        st.json(log)
+col1, col2 = st.columns([2, 1])
+with col1:
+    st.markdown(f"### Total Calls: **{len(logs)}**")
+    if logs:
+        st.markdown("## Call Details")
+        for i, log in enumerate(logs[::-1], 1):
+            st.markdown(f"#### Call #{len(logs)-i+1}")
+            st.write(f"**User:** {log.get('user', 'N/A')}")
+            st.write(f"**Timestamp:** {log.get('timestamp', 'N/A')}")
+            st.write(f"**Cost:** ${float(log.get('cost', 0)):.2f}")
+            with st.expander("Request & Response", expanded=False):
+                st.write("**Request:**")
+                st.code(str(log.get('request', '')), language='text')
+                st.write("**Response:**")
+                st.json(log.get('response', {}))
+    else:
+        st.info("No Bedrock calls logged yet.")
+
+with col2:
     total_cost = sum(float(log.get("cost", 0)) for log in logs)
-    st.write(f"### Total Cost: ${total_cost:.2f}")
-else:
-    st.write("No Bedrock calls logged yet.")
+    st.markdown(f"### 💸 Total Cost")
+    st.metric(label="Total Cost", value=f"${total_cost:.2f}")
