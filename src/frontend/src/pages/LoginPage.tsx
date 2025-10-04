@@ -115,12 +115,28 @@ export const LoginPage = () => {
                                 sx={{
                                     '& .MuiOutlinedInput-root': {
                                         borderRadius: 2,
+                                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
                                         '&.Mui-focused fieldset': {
                                             borderColor: '#3b82f6',
+                                            borderWidth: 2,
+                                        },
+                                        '& fieldset': {
+                                            borderColor: 'rgba(0, 0, 0, 0.23)',
                                         },
                                     },
-                                    '& .MuiInputLabel-root.Mui-focused': {
-                                        color: '#3b82f6',
+                                    '& .MuiInputLabel-root': {
+                                        color: '#1e3a8a',
+                                        backgroundColor: 'transparent',
+                                        textShadow: '0 0 8px #ffffff, 0 0 12px #ffffff, 0 0 16px #ffffff',
+                                        fontWeight: 600,
+                                        '&.Mui-focused': {
+                                            color: '#1e3a8a',
+                                            backgroundColor: 'transparent',
+                                            textShadow: '0 0 8px #ffffff, 0 0 12px #ffffff, 0 0 16px #ffffff',
+                                        },
+                                    },
+                                    '& .MuiInputBase-input': {
+                                        color: '#1e293b',
                                     },
                                 }}
                             />
@@ -138,12 +154,28 @@ export const LoginPage = () => {
                                 sx={{
                                     '& .MuiOutlinedInput-root': {
                                         borderRadius: 2,
+                                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
                                         '&.Mui-focused fieldset': {
                                             borderColor: '#3b82f6',
+                                            borderWidth: 2,
+                                        },
+                                        '& fieldset': {
+                                            borderColor: 'rgba(0, 0, 0, 0.23)',
                                         },
                                     },
-                                    '& .MuiInputLabel-root.Mui-focused': {
-                                        color: '#3b82f6',
+                                    '& .MuiInputLabel-root': {
+                                        color: '#1e3a8a',
+                                        backgroundColor: 'transparent',
+                                        textShadow: '0 0 8px #ffffff, 0 0 12px #ffffff, 0 0 16px #ffffff',
+                                        fontWeight: 600,
+                                        '&.Mui-focused': {
+                                            color: '#1e3a8a',
+                                            backgroundColor: 'transparent',
+                                            textShadow: '0 0 8px #ffffff, 0 0 12px #ffffff, 0 0 16px #ffffff',
+                                        },
+                                    },
+                                    '& .MuiInputBase-input': {
+                                        color: '#1e293b',
                                     },
                                 }}
                             />
