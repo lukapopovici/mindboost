@@ -20,7 +20,6 @@
 }
 
 .MuiButton-contained:hover {
-  transform: translateY(-3px) scale(1.02) !important;
   box-shadow: 0 12px 35px rgba(30, 58, 138, 0.25) !important;
 }
 

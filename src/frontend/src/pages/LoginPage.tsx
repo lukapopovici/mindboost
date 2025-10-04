@@ -25,23 +25,23 @@ export const LoginPage = () => {
     };
 
     return (
-        <Box sx={{ 
-            minHeight: '100vh', 
-            background: 'linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: 2
-        }}>
-            <Container component="main" maxWidth="sm">
+        <div className="login-page-background">
+            <Box sx={{ 
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: 2,
+                minHeight: '100vh'
+            }}>
+                <Container component="main" maxWidth="sm">
                 <Paper 
                     elevation={0}
+                    className="feature-card"
                     sx={{ 
                         padding: 4,
                         borderRadius: 4,
-                        background: '#ffffff',
-                        boxShadow: '0 12px 40px rgba(30, 58, 138, 0.2)',
-                        border: '1px solid #cbd5e1'
+                        position: 'relative',
+                        zIndex: 1
                     }}
                 >
                     <Box sx={{ 
@@ -66,7 +66,7 @@ export const LoginPage = () => {
                             sx={{
                                 fontFamily: 'Crimson Text, serif',
                                 fontWeight: 600,
-                                color: '#1e3a8a',
+                                color: '#ffffff',
                                 marginBottom: 1
                             }}
                         >
@@ -76,7 +76,7 @@ export const LoginPage = () => {
                         <Typography 
                             variant="body1" 
                             sx={{ 
-                                color: '#475569', 
+                                color: '#f1f5f9', 
                                 marginBottom: 3,
                                 maxWidth: 400
                             }}
@@ -87,10 +87,11 @@ export const LoginPage = () => {
                         <Chip 
                             label="Academic Excellence Platform" 
                             sx={{ 
-                                background: '#dbeafe',
-                                color: '#1e3a8a',
+                                background: 'rgba(255,255,255,0.15)',
+                                color: '#ffffff',
                                 marginBottom: 4,
-                                fontWeight: 500
+                                fontWeight: 500,
+                                backdropFilter: 'blur(10px)'
                             }} 
                         />
 
@@ -188,7 +189,7 @@ export const LoginPage = () => {
                             <Typography 
                                 variant="body2" 
                                 sx={{ 
-                                    color: '#475569', 
+                                    color: '#e2e8f0', 
                                     textAlign: 'center',
                                     mt: 2
                                 }}
@@ -199,6 +200,7 @@ export const LoginPage = () => {
                     </Box>
                 </Paper>
             </Container>
-        </Box>
+            </Box>
+        </div>
     );
 };
