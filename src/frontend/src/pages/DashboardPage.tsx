@@ -109,14 +109,9 @@ export function DashboardPage() {
     <>
       {/* Beautiful Academic Header */}
       <AppBar position="static" className="custom-appbar" elevation={0}>
-        <Toolbar sx={{ padding: '8px 24px' }}>
-          <Box display="flex" alignItems="center" sx={{ flexGrow: 1 }}>
-            <PsychologyIcon sx={{ marginRight: 2, fontSize: '2rem' }} />
-            <Typography variant="h6" component="div" className="appbar-title">
-              MindBoost Analytics
-            </Typography>
-          </Box>
-          <Box display="flex" alignItems="center" gap={2}>
+        <Toolbar sx={{ padding: '12px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          {/* Left side spacer */}
+          <Box sx={{ width: '200px', display: 'flex', justifyContent: 'flex-start' }}>
             <Chip 
               label="Academic Mode" 
               size="small" 
@@ -126,6 +121,18 @@ export function DashboardPage() {
                 fontWeight: 500
               }} 
             />
+          </Box>
+          
+          {/* Centered MindBoost Logo and Text */}
+          <Box display="flex" alignItems="center" sx={{ flex: 1, justifyContent: 'center' }}>
+            <PsychologyIcon sx={{ marginRight: 2, fontSize: '3.5rem' }} />
+            <Typography variant="h4" component="div" className="appbar-title-centered">
+              MindBoost
+            </Typography>
+          </Box>
+          
+          {/* Right side controls */}
+          <Box sx={{ width: '200px', display: 'flex', justifyContent: 'flex-end' }}>
             <IconButton 
               color="inherit" 
               onClick={logout}
@@ -143,9 +150,6 @@ export function DashboardPage() {
       <div className="App">
         {/* Stunning Hero Header */}
         <header className="App-header">
-          <Typography variant="h1" component="h1" className="main-title">
-            MindBoost AI
-          </Typography>
           <Typography variant="h4" component="h2" className="subtitle">
             Your Intelligent Academic Companion for Personalized Learning & Well-being
           </Typography>
