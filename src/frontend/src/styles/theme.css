@@ -7,18 +7,21 @@
 
 /* Global Material-UI Button Overrides */
 .MuiButton-root {
+  font-family: 'Montserrat', 'Inter', sans-serif !important;
   text-transform: none !important;
-  border-radius: 12px !important;
+  border-radius: 15px !important;
   font-weight: 600 !important;
+  letter-spacing: 0.02em !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 .MuiButton-contained {
-  box-shadow: 0 4px 20px rgba(30, 58, 138, 0.1) !important;
+  box-shadow: 0 6px 25px rgba(30, 58, 138, 0.15) !important;
 }
 
 .MuiButton-contained:hover {
-  transform: translateY(-2px) !important;
-  transition: all 0.3s ease !important;
+  transform: translateY(-3px) scale(1.02) !important;
+  box-shadow: 0 12px 35px rgba(30, 58, 138, 0.25) !important;
 }
 
 /* AppBar Styling */
@@ -50,15 +53,42 @@
   color: #3b82f6 !important;
 }
 
+/* Typography Overrides */
+.MuiTypography-h1 {
+  font-family: 'Playfair Display', serif !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+}
+
+.MuiTypography-h2 {
+  font-family: 'Playfair Display', serif !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em !important;
+}
+
+.MuiTypography-h3, .MuiTypography-h4, .MuiTypography-h5, .MuiTypography-h6 {
+  font-family: 'Montserrat', sans-serif !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em !important;
+}
+
+.MuiTypography-body1, .MuiTypography-body2 {
+  font-family: 'Inter', sans-serif !important;
+  line-height: 1.6 !important;
+  letter-spacing: 0.005em !important;
+}
+
 /* Chip Styling */
 .MuiChip-root {
-  border-radius: 20px !important;
+  font-family: 'Poppins', sans-serif !important;
+  border-radius: 25px !important;
   font-weight: 500 !important;
+  letter-spacing: 0.01em !important;
 }
 
 /* Paper Styling */
 .MuiPaper-root {
-  border-radius: 0px !important;
+  border-radius: 20px !important;
 }
 
 /* Alert Styling */
