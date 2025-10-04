@@ -1,13 +1,34 @@
 import React, { useState } from 'react';
 import '../App.css';
-import { Container, Typography, Box, Button, Input, Paper, Accordion, AccordionSummary, AccordionDetails, AppBar, Toolbar, IconButton } from '@mui/material';
+import { 
+  Container, 
+  Typography, 
+  Box, 
+  Button, 
+  Input, 
+  Paper, 
+  Accordion, 
+  AccordionSummary, 
+  AccordionDetails, 
+  AppBar, 
+  Toolbar, 
+  IconButton,
+  Chip,
+  LinearProgress,
+  Alert,
+  Snackbar
+} from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import LogoutIcon from '@mui/icons-material/Logout';
-import axios from 'axios'; // Folosim axios pentru a gestiona mai usor headerele
+import PsychologyIcon from '@mui/icons-material/Psychology';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
+import ScienceIcon from '@mui/icons-material/Science';
+import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 
 export function DashboardPage() {
-  const { logout, token } = useAuth(); // Preluam functia de logout si token-ul din context
+  const { logout, token } = useAuth();
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [fileName, setFileName] = useState<string>('');
@@ -19,6 +40,10 @@ export function DashboardPage() {
   const [bedrockAnswer, setBedrockAnswer] = useState<string | null>(null);
   const [bedrockLoading, setBedrockLoading] = useState(false);
   const [bedrockError, setBedrockError] = useState<string | null>(null);
+
+  const [burnoutModalOpen, setBurnoutModalOpen] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -75,77 +100,261 @@ export function DashboardPage() {
     }
   };
 
+  const handleBurnoutCheck = () => {
+    setSnackbarMessage('🧠 Burnout assessment feature coming soon! We\'re developing an AI-powered tool to help you recognize early signs of academic burnout.');
+    setSnackbarOpen(true);
+  };
+
   return (
     <>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            MindBoost Dashboard
-          </Typography>
-          <IconButton color="inherit" onClick={logout}>
-            <LogoutIcon />
-          </IconButton>
+      {/* Beautiful Academic Header */}
+      <AppBar position="static" className="custom-appbar" elevation={0}>
+        <Toolbar sx={{ padding: '12px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          {/* Left side spacer */}
+          <Box sx={{ width: '200px', display: 'flex', justifyContent: 'flex-start' }}>
+            <Chip 
+              label="Academic Mode" 
+              size="small" 
+              sx={{ 
+                background: 'rgba(255,255,255,0.2)', 
+                color: 'white',
+                fontWeight: 500
+              }} 
+            />
+          </Box>
+          
+          {/* Centered MindBoost Logo and Text */}
+          <Box display="flex" alignItems="center" sx={{ flex: 1, justifyContent: 'center' }}>
+            <PsychologyIcon sx={{ marginRight: 2, fontSize: '3.5rem' }} />
+            <Typography variant="h4" component="div" className="appbar-title-centered">
+              MindBoost
+            </Typography>
+          </Box>
+          
+          {/* Right side controls */}
+          <Box sx={{ width: '200px', display: 'flex', justifyContent: 'flex-end' }}>
+            <IconButton 
+              color="inherit" 
+              onClick={logout}
+              sx={{ 
+                background: 'rgba(255,255,255,0.1)',
+                '&:hover': { background: 'rgba(255,255,255,0.2)' }
+              }}
+            >
+              <LogoutIcon />
+            </IconButton>
+          </Box>
         </Toolbar>
       </AppBar>
+
       <div className="App">
+        {/* Stunning Hero Header */}
         <header className="App-header">
-          <Typography variant="h2" component="h1" gutterBottom>
-            MindBoost AI: An Intelligent Study Companion
+          <Typography variant="h4" component="h2" className="subtitle">
+            Your Intelligent Academic Companion for Personalized Learning & Well-being
           </Typography>
-          <Typography className="subtitle" variant="h5" component="h2" gutterBottom>
-            Personalized Learning with Concept Graphs & Burnout Prevention
-          </Typography>
+          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'center', mt: 2 }}>
+            <Chip 
+              icon={<ScienceIcon />} 
+              label="Knowledge Graphs" 
+              sx={{ 
+                background: 'rgba(255,255,255,0.15)', 
+                color: 'white',
+                backdropFilter: 'blur(10px)'
+              }} 
+            />
+            <Chip 
+              icon={<PsychologyIcon />} 
+              label="AI-Powered" 
+              sx={{ 
+                background: 'rgba(255,255,255,0.15)', 
+                color: 'white',
+                backdropFilter: 'blur(10px)'
+              }} 
+            />
+            <Chip 
+              icon={<QuestionAnswerIcon />} 
+              label="Smart Q&A" 
+              sx={{ 
+                background: 'rgba(255,255,255,0.15)', 
+                color: 'white',
+                backdropFilter: 'blur(10px)'
+              }} 
+            />
+          </Box>
+          <Button 
+            variant="contained" 
+            className="burnout-button"
+            onClick={handleBurnoutCheck}
+            startIcon={<PsychologyIcon />}
+            size="large"
+          >
+            Am I burnt out?
+          </Button>
         </header>
-        <Container maxWidth="sm">
-          {/* Section 1: Upload Materials & Knowledge Graph */}
-          <Accordion defaultExpanded>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography variant="h6">Upload to Generate Knowledge Graph</Typography>
+
+        <Container className="content-container">
+          {/* Knowledge Graph Upload Section */}
+          <Accordion className="feature-card" defaultExpanded>
+            <AccordionSummary 
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="upload-content"
+              id="upload-header"
+            >
+              <Box display="flex" alignItems="center" gap={2}>
+                <CloudUploadIcon color="primary" />
+                <Typography variant="h6" className="section-title">
+                  Generate Knowledge Graph
+                </Typography>
+              </Box>
             </AccordionSummary>
             <AccordionDetails>
-              <Paper elevation={3} className="upload-section" style={{ width: '100%', padding: '16px' }}>
-                <Box display="flex" flexDirection="column" alignItems="center">
-                  <label htmlFor="file-upload">
-                    <Input id="file-upload" type="file" onChange={handleFileChange} style={{ display: 'none' }} />
-                    <Button variant="contained" color="primary" component="span">
+              <Box className="upload-section">
+                <Box display="flex" flexDirection="column" alignItems="center" gap={3}>
+                  <Typography variant="body1" color="textSecondary" textAlign="center">
+                    Upload your study materials to generate an intelligent concept map
+                  </Typography>
+                  
+                  <label htmlFor="file-upload" style={{ cursor: 'pointer' }}>
+                    <Input 
+                      id="file-upload" 
+                      type="file" 
+                      onChange={handleFileChange} 
+                      style={{ display: 'none' }} 
+                      inputProps={{ accept: '.pdf,.doc,.docx,.txt' }}
+                    />
+                    <Button 
+                      variant="contained" 
+                      color="primary" 
+                      component="span"
+                      startIcon={<CloudUploadIcon />}
+                      size="large"
+                      sx={{ minWidth: 200 }}
+                    >
                       Choose File
                     </Button>
                   </label>
-                  {fileName && <Typography variant="body2" style={{ marginTop: 12 }}>Selected: {fileName}</Typography>}
-                  <Button variant="contained" color="secondary" style={{ marginTop: 16 }} onClick={handleUpload} disabled={!selectedFile || pdfLoading}>
-                    {pdfLoading ? 'Generating...' : 'Generate Graph'}
+                  
+                  {fileName && (
+                    <Chip 
+                      label={`Selected: ${fileName}`} 
+                      color="primary" 
+                      variant="outlined"
+                      sx={{ maxWidth: 300 }}
+                    />
+                  )}
+                  
+                  <Button 
+                    variant="contained" 
+                    color="secondary" 
+                    onClick={handleUpload} 
+                    disabled={!selectedFile || pdfLoading}
+                    startIcon={<ScienceIcon />}
+                    size="large"
+                    sx={{ minWidth: 200 }}
+                  >
+                    {pdfLoading ? 'Generating Graph...' : 'Generate Knowledge Graph'}
                   </Button>
-                  {pdfError && <Typography color="error" style={{ marginTop: 8 }}>{pdfError}</Typography>}
+                  
+                  {pdfLoading && (
+                    <Box sx={{ width: '100%', maxWidth: 400 }}>
+                      <LinearProgress />
+                      <Typography variant="body2" textAlign="center" sx={{ mt: 1 }}>
+                        Processing your document...
+                      </Typography>
+                    </Box>
+                  )}
+                  
+                  {pdfError && (
+                    <Alert severity="error" sx={{ width: '100%', maxWidth: 400 }}>
+                      {pdfError}
+                    </Alert>
+                  )}
+                  
                   {pdfResult && (
-                    <Box mt={2} width="100%">
-                      <Typography variant="subtitle1">Graph Data:</Typography>
-                      <Paper style={{ maxHeight: 200, overflow: 'auto', padding: 8, background: '#f5f5f5' }}>
-                        <pre style={{ textAlign: 'left', margin: 0 }}>{JSON.stringify(pdfResult, null, 2)}</pre>
+                    <Box sx={{ width: '100%' }}>
+                      <Typography variant="h6" gutterBottom color="primary">
+                        📊 Knowledge Graph Generated
+                      </Typography>
+                      <Paper className="result-container" elevation={0}>
+                        <pre>{JSON.stringify(pdfResult, null, 2)}</pre>
                       </Paper>
                     </Box>
                   )}
                 </Box>
-              </Paper>
+              </Box>
             </AccordionDetails>
           </Accordion>
           
-          {/* Section 2: Ask Bedrock */}
-          <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography variant="h6">Ask Bedrock (AI Q&A)</Typography>
+          {/* AI Q&A Section */}
+          <Accordion className="feature-card">
+            <AccordionSummary 
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="qa-content"
+              id="qa-header"
+            >
+              <Box display="flex" alignItems="center" gap={2}>
+                <QuestionAnswerIcon color="primary" />
+                <Typography variant="h6" className="section-title">
+                  AI Study Assistant
+                </Typography>
+              </Box>
             </AccordionSummary>
             <AccordionDetails>
-              <Box display="flex" flexDirection="column" alignItems="center" width="100%">
-                <Input placeholder="Type your question..." value={question} onChange={e => setQuestion(e.target.value)} style={{ width: '100%', marginBottom: 12 }} disabled={bedrockLoading} />
-                <Button variant="contained" color="primary" onClick={handleAskBedrock} disabled={!question.trim() || bedrockLoading}>
-                  {bedrockLoading ? 'Asking...' : 'Ask'}
+              <Box display="flex" flexDirection="column" gap={3}>
+                <Typography variant="body1" color="textSecondary" textAlign="center">
+                  Ask questions about your study materials and get intelligent answers
+                </Typography>
+                
+                <Input 
+                  placeholder="What would you like to know about your study materials?" 
+                  value={question} 
+                  onChange={e => setQuestion(e.target.value)}
+                  disabled={bedrockLoading}
+                  multiline
+                  rows={3}
+                  sx={{ 
+                    width: '100%',
+                    padding: 2,
+                    border: '1px solid var(--silver-blue)',
+                    borderRadius: '12px'
+                  }}
+                />
+                
+                <Button 
+                  variant="contained" 
+                  color="primary" 
+                  onClick={handleAskBedrock} 
+                  disabled={!question.trim() || bedrockLoading}
+                  startIcon={<QuestionAnswerIcon />}
+                  size="large"
+                  sx={{ alignSelf: 'center', minWidth: 200 }}
+                >
+                  {bedrockLoading ? 'Thinking...' : 'Ask AI Assistant'}
                 </Button>
-                {bedrockError && <Typography color="error" style={{ marginTop: 8 }}>{bedrockError}</Typography>}
+                
+                {bedrockLoading && (
+                  <Box sx={{ width: '100%' }}>
+                    <LinearProgress />
+                    <Typography variant="body2" textAlign="center" sx={{ mt: 1 }}>
+                      AI is processing your question...
+                    </Typography>
+                  </Box>
+                )}
+                
+                {bedrockError && (
+                  <Alert severity="error" sx={{ width: '100%' }}>
+                    {bedrockError}
+                  </Alert>
+                )}
+                
                 {bedrockAnswer && (
-                  <Box mt={2} width="100%">
-                    <Typography variant="subtitle1">Bedrock Answer:</Typography>
-                    <Paper style={{ maxHeight: 200, overflow: 'auto', padding: 8, background: '#f5f5f5' }}>
-                      <pre style={{ textAlign: 'left', margin: 0 }}>{bedrockAnswer}</pre>
+                  <Box sx={{ width: '100%' }}>
+                    <Typography variant="h6" gutterBottom color="primary">
+                      🤖 AI Response
+                    </Typography>
+                    <Paper className="result-container" elevation={0}>
+                      <pre>{bedrockAnswer}</pre>
                     </Paper>
                   </Box>
                 )}
@@ -154,6 +363,22 @@ export function DashboardPage() {
           </Accordion>
         </Container>
       </div>
+
+      {/* Notification Snackbar */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert 
+          onClose={() => setSnackbarOpen(false)} 
+          severity="info" 
+          sx={{ width: '100%', maxWidth: 500 }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </>
   );
 }

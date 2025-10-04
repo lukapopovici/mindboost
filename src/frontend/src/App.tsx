@@ -4,6 +4,8 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { CssBaseline } from '@mui/material';
+import './App.css';
+import './styles/theme.css';
 
 // O componentă care protejează rutele
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
