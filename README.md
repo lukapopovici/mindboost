@@ -48,10 +48,13 @@ B --> D[Knowledge Graph Microservice]
 B --> E[Bedrock Client Microservice]
 B --> F[Quiz Burnout Gateway]
 F --> G[Quiz Score Microservice]
+G --> L[(MongoDB)]
+G --> K[Interest Monitor Streamlit]
+K --> O[(MongoDB)]
 F --> H[ML Model Burnout]
-H --> I[(MongoDB)]
+H --> I[Trained Model]
 E --> J[Bedrock Monitor Streamlit]
-I --> K[Interest Monitor Streamlit]
+
 ```
 
 ---
