@@ -49,6 +49,12 @@ This project is organized as a set of independent microservices:
 - **quiz-burnout-gateway**: Fetches user quiz data from MongoDB and feeds it to the burnout predictor, returning the result
 - **mongodb**: NoSQL database for storing quiz scores and user data
 - **bedrock-monitor**: Streamlit microservice for monitoring Bedrock API usage, costs, and user activity
+- **interest-monitor-microservice**: Stores and displays relevant topics (interests) extracted from papers, with a Streamlit frontend and MongoDB storage
+9. **Interest Monitor Microservice**
+   - Directory: `interest-monitor-microservice`
+   - Run: `flask --app main run --host=0.0.0.0 --port=8020` (API)
+   - Run: `streamlit run app.py` (Frontend)
+   - Purpose: Receives and displays relevant topics (interests) for papers, stores them in MongoDB, and shows them in a Streamlit dashboard
 - **frontend**: React app for the user interface
 
 

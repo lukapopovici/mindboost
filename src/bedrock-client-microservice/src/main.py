@@ -1,77 +1,99 @@
-    # Example: Amazon Bedrock call (uncomment and configure for real use)
-    # import boto3, json
-    # bedrock_client = boto3.client('bedrock-runtime', region_name='us-east-1')
-    # prompt = f"Generate a quiz from the following text:\n{text}"
-    # response = bedrock_client.invoke_model(
-    #     modelId='your-bedrock-model-id',
-    #     contentType='application/json',
-    #     accept='application/json',
-    #     body=json.dumps({"input": prompt})
-    # )
-    # quiz = json.loads(response['body'])
 from fastapi import FastAPI, UploadFile, File, Request
 import requests
 import os
 import json
 
 app = FastAPI()
+
 PDF_PARSER_URL = os.getenv("PDF_PARSER_URL", "http://localhost:8002/parse-pdf/")
 BEDROCK_MONITOR_URL = os.getenv("BEDROCK_MONITOR_URL", "http://localhost:8502/log")
+INTEREST_MONITOR_URL = os.getenv("INTEREST_MONITOR_URL", "http://localhost:8020/interest")
+
+# Bedrock config
+BEDROCK_REGION = os.getenv("BEDROCK_REGION", "us-east-1")
+BEDROCK_MODEL_ID = os.getenv("BEDROCK_MODEL_ID", "your-bedrock-model-id")
+
+def call_bedrock_for_quiz_and_topics(text: str):
+    import boto3
+
+    prompt = (
+        "You are an assistant that outputs only strict JSON.\n"
+        "Given the following document text, produce an object with two keys:\n"
+        "1) 'quiz': A list of EXACTLY 5 multiple-choice questions (MCQ). "
+        "   Each item must be: "
+        "{\"question\": str, \"options\": [str, str, str, str], \"correct_answer\": str}\n"
+        "2) 'topics': A list of EXACTLY 5 items capturing the main topics of the paper, each: "
+        "{\"topic\": str, \"relevance\": float, \"summary\": str, \"key_terms\": [str, ...]}\n"
+        "Return valid JSON only with keys 'quiz' and 'topics'. No extra commentary.\n\n"
+        f"Document text:\n{text}"
+    )
+
+    client = boto3.client("bedrock-runtime", region_name=BEDROCK_REGION)
+
+    body = json.dumps({"input": prompt})
+    resp = client.invoke_model(
+        modelId=BEDROCK_MODEL_ID,
+        contentType="application/json",
+        accept="application/json",
+        body=body
+    )
+
+    raw = resp.get("body")
+    if hasattr(raw, "read"):
+        raw = raw.read()
+    if isinstance(raw, (bytes, bytearray)):
+        raw = raw.decode("utf-8")
+
+    payload = json.loads(raw)  # must contain {"quiz": [...], "topics": [...]}
+    quiz = payload["quiz"]
+    topics = payload["topics"]
+
+    cost = float(resp.get("cost", 0.0))
+    return quiz, topics, cost
 
 @app.post("/quiz-from-pdf/")
 async def quiz_from_pdf(request: Request, file: UploadFile = File(...)):
-    # Get user info from request (e.g., header or body)
     user = request.headers.get("X-User", "anonymous")
+
+    # Parse PDF
     files = {"file": (file.filename, await file.read(), file.content_type)}
-    response = requests.post(PDF_PARSER_URL, files=files)
-    if response.status_code != 200:
-        return {"error": "PDF parsing failed", "details": response.text}
-    text = response.json().get("text", "")
+    r = requests.post(PDF_PARSER_URL, files=files, timeout=30)
+    if r.status_code != 200:
+        return {"error": "PDF parsing failed", "details": r.text}
+    text = r.json().get("text", "")
 
-    # --- Bedrock API Integration ---
-    # To use Amazon Bedrock, uncomment and configure the following:
-    # import boto3, json
-    # bedrock_client = boto3.client('bedrock-runtime', region_name='us-east-1')
-    # prompt = f"Generate a quiz from the following text:\n{text}"
-    # response = bedrock_client.invoke_model(
-    #     modelId='your-bedrock-model-id',
-    #     contentType='application/json',
-    #     accept='application/json',
-    #     body=json.dumps({"input": prompt})
-    # )
-    # quiz = json.loads(response['body'])
-    # cost = float(response.get('cost', 0.01))  # Replace with actual cost extraction
+    if not text:
+        return {"error": "Parsed PDF contained no text"}
 
-    # --- Simulated quiz for development ---
-    quiz = [
-        {
-            "question": "What is the main topic of the document?",
-            "options": ["Math", "Science", "History", "Literature"],
-            "correct_answer": "Science"
-        },
-        {
-            "question": "How many pages does the document have?",
-            "options": ["1", "2", "5", "10"],
-            "correct_answer": str(text.count('\n') // 30 + 1)
-        },
-        {
-            "question": "Which keyword appears most?",
-            "options": ["data", "analysis", "experiment", "result"],
-            "correct_answer": "data"
-        }
-    ]
-    cost = 0.01  # Simulated cost
+    # Bedrock: quiz + topics
+    try:
+        quiz, topics, bedrock_cost = call_bedrock_for_quiz_and_topics(text)
+    except Exception as e:
+        return {"error": "Bedrock call failed", "details": str(e)}
 
     # Log to Bedrock Monitor
-    log_data = {
+    try:
+        requests.post(
+            BEDROCK_MONITOR_URL,
+            json={"user": user, "request": text, "response": {"quiz": quiz, "topics": topics}, "cost": bedrock_cost},
+            timeout=5
+        )
+    except Exception as e:
+        print(f"Bedrock Monitor logging failed: {e}")
+
+    # Forward topics to Interest Monitor
+    interest_payload = {
         "user": user,
-        "request": text,
-        "response": quiz,
-        "cost": cost
+        "label": "interest",
+        "topics": topics,
+        "source": file.filename
     }
     try:
-        requests.post(BEDROCK_MONITOR_URL, json=log_data)
+        ir = requests.post(INTEREST_MONITOR_URL, json=interest_payload, timeout=5)
+        if ir.status_code >= 300:
+            print(f"Interest Monitor returned {ir.status_code}: {ir.text}")
     except Exception as e:
-        print(f"Failed to log to Bedrock Monitor: {e}")
+        print(f"Failed to forward interests to Interest Monitor: {e}")
 
-    return {"quiz": quiz, "source_text": text, "cost": cost}
+    # Return to client
+    return {"quiz": quiz, "topics": topics, "source_text": text, "cost": bedrock_cost}
