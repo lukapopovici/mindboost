@@ -8,13 +8,34 @@ app = FastAPI()
 PDF_PARSER_URL = os.getenv("PDF_PARSER_URL", "http://localhost:8002/parse-pdf/")
 BEDROCK_MONITOR_URL = os.getenv("BEDROCK_MONITOR_URL", "http://localhost:8502/log")
 INTEREST_MONITOR_URL = os.getenv("INTEREST_MONITOR_URL", "http://localhost:8020/interest")
+APIKEY_PATH = os.path.join(os.path.dirname(__file__), "bedrock_apikey.txt")
 
-# Bedrock config
-BEDROCK_REGION = os.getenv("BEDROCK_REGION", "us-east-1")
-BEDROCK_MODEL_ID = os.getenv("BEDROCK_MODEL_ID", "your-bedrock-model-id")
+def read_apikey():
+    try:
+        with open(APIKEY_PATH, "r") as f:
+            for line in f:
+                if line.startswith("BEDROCK_API_KEY="):
+                    return line.strip().split("=", 1)[1]
+    except Exception:
+        return None
+    return None
 
-def call_bedrock_for_quiz_and_topics(text: str):
+def call_bedrock_for_quiz_and_topics(text: str, apikey: str = None):
+    # Use boto3 for Bedrock LLM calls, passing API key if possible (mock: use as AWS_ACCESS_KEY_ID)
     import boto3
+    import botocore
+    import base64
+    import tempfile
+
+    # If apikey is provided, set it as AWS_ACCESS_KEY_ID (mock)
+    # In real AWS, you would use AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
+    # Here, we use apikey as AWS_ACCESS_KEY_ID and a dummy secret
+    session = boto3.Session(
+        aws_access_key_id=apikey if apikey else "dummy-access-key",
+        aws_secret_access_key="dummy-secret-key",
+        region_name="us-east-1"
+    )
+    client = session.client("bedrock-runtime")
 
     prompt = (
         "You are an assistant that outputs only strict JSON.\n"
@@ -27,29 +48,29 @@ def call_bedrock_for_quiz_and_topics(text: str):
         "Return valid JSON only with keys 'quiz' and 'topics'. No extra commentary.\n\n"
         f"Document text:\n{text}"
     )
-
-    client = boto3.client("bedrock-runtime", region_name=BEDROCK_REGION)
-
     body = json.dumps({"input": prompt})
-    resp = client.invoke_model(
-        modelId=BEDROCK_MODEL_ID,
-        contentType="application/json",
-        accept="application/json",
-        body=body
-    )
+    try:
+        resp = client.invoke_model(
+            modelId="your-bedrock-model-id",
+            contentType="application/json",
+            accept="application/json",
+            body=body
+        )
+        raw = resp.get("body")
+        if hasattr(raw, "read"):
+            raw = raw.read()
+        if isinstance(raw, (bytes, bytearray)):
+            raw = raw.decode("utf-8")
+        payload = json.loads(raw)
+        quiz = payload.get("quiz", [])
+        topics = payload.get("topics", [])
+        cost = float(resp.get("cost", 0.0))
+        return quiz, topics, cost
+    except botocore.exceptions.BotoCoreError as e:
+        raise Exception(f"Bedrock boto3 error: {e}")
+    except Exception as e:
+        raise Exception(f"Bedrock call failed: {e}")
 
-    raw = resp.get("body")
-    if hasattr(raw, "read"):
-        raw = raw.read()
-    if isinstance(raw, (bytes, bytearray)):
-        raw = raw.decode("utf-8")
-
-    payload = json.loads(raw)  # must contain {"quiz": [...], "topics": [...]}
-    quiz = payload["quiz"]
-    topics = payload["topics"]
-
-    cost = float(resp.get("cost", 0.0))
-    return quiz, topics, cost
 
 @app.post("/quiz-from-pdf/")
 async def quiz_from_pdf(request: Request, file: UploadFile = File(...)):
@@ -65,9 +86,14 @@ async def quiz_from_pdf(request: Request, file: UploadFile = File(...)):
     if not text:
         return {"error": "Parsed PDF contained no text"}
 
+    # Read API key from file
+    apikey = read_apikey()
+    if not apikey:
+        return {"error": "Bedrock API key not found in bedrock_apikey.txt"}
+
     # Bedrock: quiz + topics
     try:
-        quiz, topics, bedrock_cost = call_bedrock_for_quiz_and_topics(text)
+        quiz, topics, bedrock_cost = call_bedrock_for_quiz_and_topics(text, apikey=apikey)
     except Exception as e:
         return {"error": "Bedrock call failed", "details": str(e)}
 
