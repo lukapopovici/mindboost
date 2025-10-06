@@ -1,3 +1,8 @@
+
+# MindBoost
+
+MindBoost is an intelligent academic companion platform built as a set of microservices. It helps students and educators analyze study materials, generate knowledge graphs, create quizzes, track learning progress, and monitor academic well-being. The system integrates AI-powered document parsing, knowledge extraction, quiz generation, burnout prediction, and interest tracking, all accessible via a modern React frontend and orchestrated with Docker Compose.
+
 ## Burnout Predictor ML Model
 
 The `ml-model-burnout` microservice uses a trained machine learning model to predict the probability that a user is close to burnout, based on a time series of scores (e.g., stress, wellbeing, or other relevant metrics).
@@ -28,46 +33,16 @@ The `ml-model-burnout` microservice uses a trained machine learning model to pre
 }
 ```
 
-Send a POST request to `/predict` with the above input format to receive a burnout probability and feature introspection.
-
-# MindBoost
-MindBoost AI: An Intelligent Study Companion
-
-## Microservices Architecture
-
-
-
-This project is organized as a set of independent microservices:
-
-
 - **backend**: API Gateway microservice (routes requests to other services)
 - **pdf-parser-microservice**: Parses PDF files and extracts text
-- **bedrock-client-microservice**: Handles communication with Amazon Bedrock
-- **knowledge-graph-microservice**: Accepts a PDF and returns a knowledge graph (nodes/links) for visualization in the frontend (e.g., with Recharts)
-- **ml-model-burnout**: Machine learning microservice for predicting burnout risk from time series data (Flask-based, uses a trained ML model)
-- **quiz-score-microservice**: Stores quiz results (score, user, date, quiz name) in MongoDB
 - **quiz-burnout-gateway**: Fetches user quiz data from MongoDB and feeds it to the burnout predictor, returning the result
 - **mongodb**: NoSQL database for storing quiz scores and user data
-- **bedrock-monitor**: Streamlit microservice for monitoring Bedrock API usage, costs, and user activity
-- **interest-monitor-microservice**: Stores and displays relevant topics (interests) extracted from papers, with a Streamlit frontend and MongoDB storage
 9. **Interest Monitor Microservice**
    - Directory: `interest-monitor-microservice`
-   - Run: `flask --app main run --host=0.0.0.0 --port=8020` (API)
    - Run: `streamlit run app.py` (Frontend)
    - Purpose: Receives and displays relevant topics (interests) for papers, stores them in MongoDB, and shows them in a Streamlit dashboard
 - **frontend**: React app for the user interface
-
-
-Each microservice is self-contained and can be run independently. See each service's README for details.
-
-**Recommended:** Run all services together using Docker Compose for a complete, integrated experience:
-
-```sh
-docker compose up --build
-```
-
 This will start all microservices, including the ML model for burnout prediction, quiz scoring, burnout gateway, MongoDB, and monitoring, and expose their respective ports. You can interact with all features from the frontend at [http://localhost:3000](http://localhost:3000).
-
 
 
 ### Running the Microservices Individually
