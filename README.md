@@ -39,22 +39,28 @@ MindBoost AI: An Intelligent Study Companion
 
 This project is organized as a set of independent microservices:
 
+
 - **backend**: API Gateway microservice (routes requests to other services)
 - **pdf-parser-microservice**: Parses PDF files and extracts text
 - **bedrock-client-microservice**: Handles communication with Amazon Bedrock
 - **knowledge-graph-microservice**: Accepts a PDF and returns a knowledge graph (nodes/links) for visualization in the frontend (e.g., with Recharts)
 - **ml-model-burnout**: Machine learning microservice for predicting burnout risk from time series data (Flask-based, uses a trained ML model)
+- **quiz-score-microservice**: Stores quiz results (score, user, date, quiz name) in MongoDB
+- **quiz-burnout-gateway**: Fetches user quiz data from MongoDB and feeds it to the burnout predictor, returning the result
+- **mongodb**: NoSQL database for storing quiz scores and user data
+- **bedrock-monitor**: Streamlit microservice for monitoring Bedrock API usage, costs, and user activity
 - **frontend**: React app for the user interface
+
 
 Each microservice is self-contained and can be run independently. See each service's README for details.
 
-All services can also be run together using Docker Compose:
+**Recommended:** Run all services together using Docker Compose for a complete, integrated experience:
 
 ```sh
-docker-compose up --build
+docker compose up --build
 ```
 
-This will start all microservices, including the ML model for burnout prediction, and expose their respective ports.
+This will start all microservices, including the ML model for burnout prediction, quiz scoring, burnout gateway, MongoDB, and monitoring, and expose their respective ports. You can interact with all features from the frontend at [http://localhost:3000](http://localhost:3000).
 
 
 
@@ -76,13 +82,31 @@ This will start all microservices, including the ML model for burnout prediction
    - Directory: `src/knowledge-graph-microservice`
    - Run: `uvicorn src.main:app --reload`
 
+
 5. **ML Model Burnout Predictor**
    - Directory: `src/ml_model_burnout`
    - Run: `flask --app predict_service run --host=0.0.0.0 --port=8004`
 
-6. **Frontend**
-   - Directory: `src/frontend`
-   - Run: `npm start`
+6. **Quiz Score Microservice**
+   - Directory: `quiz-score-microservice`
+   - Run: `flask --app main run --host=0.0.0.0 --port=8010`
+
+7. **Quiz Burnout Gateway**
+   - Directory: `quiz-burnout-gateway`
+   - Run: `flask --app main run --host=0.0.0.0 --port=8011`
+
+8. **MongoDB**
+   - Service: `mongodb` (NoSQL database)
+   - Port: `27017`
+
+9. **Bedrock Monitor**
+   - Directory: `bedrock-monitor`
+   - Run: `streamlit run app.py`
+   - Port: `8501`
+
+10. **Frontend**
+    - Directory: `src/frontend`
+    - Run: `npm start`
 
 
 ---

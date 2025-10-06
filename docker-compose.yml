@@ -1,14 +1,6 @@
 version: '3.8'
 
 services:
-  ml-model-burnout:
-    build:
-      context: ./src/ml_model_burnout
-    command: flask --app predict_service run --host=0.0.0.0 --port=8004
-    volumes:
-      - ./src/ml_model_burnout:/app
-    ports:
-      - "8004:8004"
   backend:
     build:
       context: ./src/backend
@@ -16,7 +8,7 @@ services:
     volumes:
       - ./src/backend:/app
     ports:
-      - "8000:8000" # Expunem doar API Gateway-ul către exterior
+      - "8000:8000"
 
   pdf-parser-microservice:
     build:
@@ -24,7 +16,6 @@ services:
     command: uvicorn src.main:app --host 0.0.0.0 --port 8001 --reload
     volumes:
       - ./src/pdf-parser-microservice:/app
-    # Nu expunem portul, comunicarea se face intern
 
   bedrock-client-microservice:
     build:
@@ -40,6 +31,50 @@ services:
     volumes:
       - ./src/knowledge-graph-microservice:/app
 
+  ml-model-burnout:
+    build:
+      context: ./src/ml_model_burnout
+    command: flask --app predict_service run --host=0.0.0.0 --port=8004
+    volumes:
+      - ./src/ml_model_burnout:/app
+    ports:
+      - "8004:8004"
+
+  quiz-score-microservice:
+    build:
+      context: ./quiz-score-microservice
+    command: flask --app main run --host=0.0.0.0 --port=8010
+    volumes:
+      - ./quiz-score-microservice:/app
+    ports:
+      - "8010:8010"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/
+      - DB_NAME=mindboost
+      - COLLECTION_NAME=quiz_scores
+
+  quiz-burnout-gateway:
+    build:
+      context: ./quiz-burnout-gateway
+    command: flask --app main run --host=0.0.0.0 --port=8011
+    volumes:
+      - ./quiz-burnout-gateway:/app
+    ports:
+      - "8011:8011"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/
+      - DB_NAME=mindboost
+      - COLLECTION_NAME=quiz_scores
+      - BURNOUT_API=http://ml-model-burnout:8004/predict
+
+  mongodb:
+    image: mongo:6.0
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
   frontend:
     build:
       context: ./src/frontend
@@ -49,4 +84,7 @@ services:
       - ./src/frontend/src:/app/src
       - ./src/frontend/public:/app/public
     environment:
-      - CHOKIDAR_USEPOLLING=true # Necesar pentru hot-reloading în Docker pe unele sisteme
+      - CHOKIDAR_USEPOLLING=true
+
+volumes:
+  mongo-data:
