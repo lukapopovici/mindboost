@@ -56,7 +56,7 @@ I --> K[Interest Monitor Streamlit]
 
 ---
 
-## ⚙️ Microservices Included
+##  Microservices Included
 
 | Service | Technology | Description | Port |
 |----------|-------------|--------------|------|
@@ -106,7 +106,7 @@ The **`ml-model-burnout`** microservice predicts a user’s likelihood of academ
 
 ---
 
-## 🐳 Running the System
+##  Running the System
 
 You can run the entire MindBoost platform using Docker Compose.
 
