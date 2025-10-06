@@ -43,9 +43,12 @@ Below is a simplified system diagram illustrating the service interactions:
 ```mermaid
 graph TD
 A[Frontend] --> B[Backend API Gateway]
-B --> C[PDF Parser Microservice]
+
+C[PDF Parser Microservice] --> E[Bedrock Client Microservice]
+C --> D
 B --> D[Knowledge Graph Microservice]
-B --> E[Bedrock Client Microservice]
+B --> E
+D --> J
 B --> F[Quiz Burnout Gateway]
 F --> G[Quiz Score Microservice]
 G --> L[(MongoDB)]
