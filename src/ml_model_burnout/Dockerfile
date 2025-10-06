@@ -7,6 +7,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY predict_service.py ./
 
-EXPOSE 8000
+EXPOSE 8008
 
 CMD ["flask", "--app", "predict_service", "run", "--host=0.0.0.0", "--port=8000"]
