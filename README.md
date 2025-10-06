@@ -42,7 +42,7 @@ Below is a simplified system diagram illustrating the service interactions:
 
 ```mermaid
 graph TD
-A[Frontend (React)] --> B[Backend (API Gateway)]
+A[Frontend] --> B[Backend API Gateway]
 B --> C[PDF Parser Microservice]
 B --> D[Knowledge Graph Microservice]
 B --> E[Bedrock Client Microservice]
@@ -50,8 +50,8 @@ B --> F[Quiz Burnout Gateway]
 F --> G[Quiz Score Microservice]
 F --> H[ML Model Burnout]
 H --> I[(MongoDB)]
-E --> J[Bedrock Monitor (Streamlit)]
-I --> K[Interest Monitor (Streamlit)]
+E --> J[Bedrock Monitor Streamlit]
+I --> K[Interest Monitor Streamlit]
 ```
 
 ---
