@@ -59,6 +59,57 @@ H --> I[Trained Model]
 E --> J[Bedrock Monitor Streamlit]
 
 ```
+## Flowchart 
+
+```mermaid
+flowchart TD
+    subgraph User Interaction
+        A[Login ]
+        C[PDF Upload]
+        M[Burnout Detection Button]
+    end
+
+    subgraph Processing
+        D[PDF Parser Microservice]
+        E[Extracted Text]
+        F[Knowledge Graph Microservice]
+        H[Bedrock Client Microservice]
+        O[ML Model Burnout Microservice]
+        Q[Bedrock Monitor Microservice]
+    end
+
+    subgraph Storage
+        K[(MongoDB)]
+    end
+
+    subgraph Output
+        G[Knowledge Graph Visualization]
+        I[Quiz Generation]
+        J[Quiz Score Microservice]
+        L[User Takes Quiz]
+        P[Burnout Risk Result]
+        R[Usage & Cost Analytics]
+    end
+
+    A --> B[Backend]
+    A --> C
+    C --> D
+    D --> E
+    E --> F
+    F --> G
+    E --> H
+    H --> I
+    I --> J
+    J --> K
+    I --> L
+    L --> J
+    M --> N[Quiz Burnout Gateway]
+    N --> K
+    N --> O
+    O --> P
+    H --> Q
+    Q --> R
+```
 
 ---
 
