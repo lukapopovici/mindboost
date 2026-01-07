@@ -246,3 +246,8 @@ MindBoost provides:
 - A robust and scalable **Dockerized environment**
 
 ---
+
+## Demo
+
+[![Demo Video](https://img.youtube.com/vi/ayK2KGQUOb8/0.jpg)](https://youtu.be/ayK2KGQUOb8)
+
